@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AppTemplateProject</string>
+    <string name="title_home">Home</string>
+    <string name="title_login">Login</string>
+    <string name="title_usuario">Usuario</string>
+    <string name="title_login_usuario">Login Usuário</string>
+    <string name="title_cadastro_usuario">Cadastro Usuário</string>
+    <string name="title_item">Item</string>
+</resources>
