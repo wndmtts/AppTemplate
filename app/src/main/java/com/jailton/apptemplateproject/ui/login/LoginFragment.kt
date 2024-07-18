@@ -31,14 +31,6 @@ class LoginFragment : Fragment() {
     private lateinit var loginButton: Button
     private lateinit var registerLink: TextView
     private lateinit var navController: NavController
-
-    private lateinit var textCadastroUsuarioTitle: TextView
-    private lateinit var registerNameEditText: EditText
-    private lateinit var registerEmailEditText: EditText
-    private lateinit var registerPasswordEditText: EditText
-    private lateinit var registerConfirmPasswordEditText: EditText
-    private lateinit var registerButton: Button
-    private lateinit var sairButton: Button
     private lateinit var database: DatabaseReference
 
     companion object {
@@ -76,9 +68,9 @@ class LoginFragment : Fragment() {
                 ).show()
             } else {
                 // Implementar a lógica de login aqui
-                val database =
-                    FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/")
-                val usersReference = database.getReference("usuarios")
+                database =
+                    FirebaseDatabase.getInstance().reference
+                val usersReference = database.child("usuarios")
 
                 // Listener para verificar se o usuário existe
                 usersReference.addListenerForSingleValueEvent(object : ValueEventListener {

@@ -2,7 +2,6 @@ package com.jailton.apptemplateproject.ui.store
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.jailton.apptemplateproject.MainActivity
 import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Item
 import com.jailton.apptemplateproject.databinding.FragmentStoreBinding
@@ -32,6 +31,7 @@ class StoreFragment : Fragment() {
 
     private var _binding: FragmentStoreBinding? = null
 
+    private lateinit var navController: NavController
     private lateinit var storeImageView: ImageView
     private lateinit var storeNameEditText: EditText
     private lateinit var storeEmailEditText: EditText
@@ -55,6 +55,9 @@ class StoreFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_store, container, false)
+
+        // Initialize NavController
+        navController = findNavController()
 
         storeImageView = view.findViewById(R.id.image_store)
         storeNameEditText = view.findViewById(R.id.edit_text_store_name)
@@ -178,7 +181,18 @@ class StoreFragment : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        // Acessar currentUser
+        val user = MainActivity.currentUser
+
+        // Verifica se o usuário atual já está definido
+        if (user == null) {
+            Toast.makeText(context, "Por favor, faça o login antes de prosseguir!", Toast.LENGTH_SHORT).show()
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

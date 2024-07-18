@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
         recyclerViewStores = root.findViewById(R.id.recyclerViewStores)
         recyclerViewStores.layoutManager = LinearLayoutManager(context)
 
-        database = FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/").reference
+        database = FirebaseDatabase.getInstance().reference
 
         fetchStores()
 

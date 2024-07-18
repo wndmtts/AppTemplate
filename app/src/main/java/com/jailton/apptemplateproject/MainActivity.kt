@@ -28,9 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         FirebaseApp.initializeApp(this)
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_usuario,
+                R.id.navigation_home, R.id.navigation_login,
                 R.id.navigation_item
             )
         )
@@ -55,24 +53,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateNavigationMenu() {
-
-        if(navView.menu.findItem(R.id.navigation_usuario).isVisible) {
-            navView.menu.findItem(R.id.navigation_usuario).setVisible(false)
+        if(navView.menu.findItem(R.id.navigation_login).isVisible) {
+            navView.menu.findItem(R.id.navigation_login).setVisible(false)
             navView.menu.findItem(R.id.navigation_cadastro_usuario).setVisible(true)
         } else{
-            navView.menu.findItem(R.id.navigation_usuario).setVisible(true)
+            navView.menu.findItem(R.id.navigation_login).setVisible(true)
             navView.menu.findItem(R.id.navigation_cadastro_usuario).setVisible(false)
-        }
-        habilitaDesabilitacdastroItem()
-    }
-
-    private fun habilitaDesabilitacdastroItem() {
-        val navView = findViewById<BottomNavigationView>(R.id.nav_view)
-        val menuItem = navView.menu.findItem(R.id.navigation_item)
-        if(menuItem.isEnabled){
-            menuItem?.isEnabled = false
-        } else {
-            menuItem?.isEnabled = true
         }
     }
 }

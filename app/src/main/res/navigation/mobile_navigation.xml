@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_usuario"
+        android:id="@+id/navigation_login"
         android:name="com.jailton.apptemplateproject.ui.login.LoginFragment"
         android:label="@string/title_login_usuario"
         tools:layout="@layout/fragment_login" />

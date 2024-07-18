@@ -36,7 +36,7 @@ class CadastroUsuarioFragment : Fragment() {
 
         // Inicializar Realtime Database
         database =
-            FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/").reference
+            FirebaseDatabase.getInstance().reference
 
         textCadastroUsuarioTitle = view.findViewById(R.id.textCadastroUsuarioTitle)
         registerNameEditText = view.findViewById(R.id.registerNameEditText)
