@@ -12,16 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_login"
-        android:name="com.jailton.apptemplateproject.ui.login.LoginFragment"
-        android:label="@string/title_login_usuario"
-        tools:layout="@layout/fragment_login" />
-
-    <fragment
-        android:id="@+id/navigation_cadastro_usuario"
-        android:name="com.jailton.apptemplateproject.ui.cadastros.CadastroUsuarioFragment"
-        android:label="@string/title_cadastro_usuario"
-        tools:layout="@layout/fragment_cadastro_usuario" />
+        android:id="@+id/navigation_perfil_usuario"
+        android:name="com.jailton.apptemplateproject.ui.usuario.PerfilUsuarioFragment"
+        android:label="@string/title_perfil_usuario"
+        tools:layout="@layout/activityt_cadastro_usuario" />
 
     <fragment
         android:id="@+id/navigation_item"

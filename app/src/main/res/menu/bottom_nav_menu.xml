@@ -7,14 +7,8 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_login"
+        android:id="@+id/navigation_perfil_usuario"
         android:icon="@drawable/ic_usuario"
-        android:title="@string/title_login" />
-
-    <item
-        android:id="@+id/navigation_cadastro_usuario"
-        android:icon="@drawable/ic_usuario"
-        android:visible="false"
         android:title="@string/title_usuario" />
 
     <item

@@ -1,12 +1,13 @@
-package com.jailton.apptemplateproject.ui.cadastros
+package com.jailton.apptemplateproject.ui.usuario
 
+import android.content.Context
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DatabaseReference
@@ -14,10 +15,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.jailton.apptemplateproject.MainActivity
 import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Usuario
+import com.jailton.apptemplateproject.databinding.FragmentHomeBinding
+import com.jailton.apptemplateproject.databinding.FragmentPerfilUsuarioBinding
 
-class CadastroUsuarioFragment : Fragment() {
 
-    private lateinit var textCadastroUsuarioTitle: TextView
+class PerfilUsuarioFragment : Fragment() {
+
+    private var _binding: FragmentPerfilUsuarioBinding? = null
+
     private lateinit var registerNameEditText: EditText
     private lateinit var registerEmailEditText: EditText
     private lateinit var registerPasswordEditText: EditText
@@ -26,19 +31,21 @@ class CadastroUsuarioFragment : Fragment() {
     private lateinit var sairButton: Button
     private lateinit var database: DatabaseReference
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_cadastro_usuario, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_perfil_usuario, container, false)
 
         // Inicializar Realtime Database
         database =
             FirebaseDatabase.getInstance().reference
 
-        textCadastroUsuarioTitle = view.findViewById(R.id.textCadastroUsuarioTitle)
         registerNameEditText = view.findViewById(R.id.registerNameEditText)
         registerEmailEditText = view.findViewById(R.id.registerEmailEditText)
         registerPasswordEditText = view.findViewById(R.id.registerPasswordEditText)
@@ -59,14 +66,16 @@ class CadastroUsuarioFragment : Fragment() {
 
         sairButton.setOnClickListener {
             MainActivity.currentUser = null
-            requireActivity().supportFragmentManager.popBackStack()
+            Toast.makeText(
+                context,
+                "Logout realizado com sucesso!",
+                Toast.LENGTH_SHORT
+            ).show()
+            requireActivity().finish()
         }
 
-        // Infla o layout para este fragmento
         return view
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,16 +85,11 @@ class CadastroUsuarioFragment : Fragment() {
         // Acessar currentUser
         val user = MainActivity.currentUser
 
-        if(user != null){
+        if (user != null) {
             registerNameEditText.setText(user.nome)
             registerEmailEditText.setText(user.email)
-
-            // Altera o texto do botão para "Atualizar"
-            registerButton.text = "Atualizar"
-            textCadastroUsuarioTitle.text = "Atualizar Dados"
         }
     }
-
 
     private fun registerUser() {
         val name = registerNameEditText.text.toString().trim()
@@ -135,29 +139,13 @@ class CadastroUsuarioFragment : Fragment() {
                     }
             }
         } else {
-            // Se o usuário não existe, insere um novo usuário
-            val userId = usuariosRef.push().key
-            if (userId != null) {
-                val newUser = Usuario(userId, name, email, password)
-
-                usuariosRef.child(userId).setValue(newUser)
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            context,
-                            "Novo usuário cadastrado com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            context,
-                            "Falha ao cadastrar novo usuário",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            } else {
-                Toast.makeText(context, "Erro ao gerar o ID do usuário", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(context, "Não foi possível encontrar o usuário logado", Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

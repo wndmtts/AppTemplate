@@ -1,19 +1,14 @@
 package com.jailton.apptemplateproject.ui.login
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -22,9 +17,9 @@ import com.google.firebase.database.ValueEventListener
 import com.jailton.apptemplateproject.MainActivity
 import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Usuario
-import com.jailton.apptemplateproject.ui.cadastros.CadastroUsuarioFragment
+import com.jailton.apptemplateproject.ui.usuario.CadastroUsuarioActivity
 
-class LoginFragment : Fragment() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
@@ -33,28 +28,19 @@ class LoginFragment : Fragment() {
     private lateinit var navController: NavController
     private lateinit var database: DatabaseReference
 
-    companion object {
-        var MODE = ""
-        const val LOGIN = "login"
-        const val CADASTRO = "cadastro"
 
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
+        FirebaseApp.initializeApp(this)
 
-        emailEditText = view.findViewById(R.id.edit_text_email)
-        passwordEditText = view.findViewById(R.id.edit_text_password)
-        loginButton = view.findViewById(R.id.button_login)
-        registerLink = view.findViewById(R.id.registerLink)
+        emailEditText = findViewById(R.id.edit_text_email)
+        passwordEditText = findViewById(R.id.edit_text_password)
+        loginButton = findViewById(R.id.button_login)
+        registerLink = findViewById(R.id.registerLink)
 
-        // Initialize NavController
-        navController = findNavController()
+
 
         loginButton.setOnClickListener {
             val email = emailEditText.text.toString()
@@ -62,7 +48,7 @@ class LoginFragment : Fragment() {
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(
-                    context,
+                    this,
                     "Por favor, preencha todos os campos",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -97,12 +83,16 @@ class LoginFragment : Fragment() {
                         }
 
                         if (userExists) {
-                            Toast.makeText(context, "Login bem-sucedido!", Toast.LENGTH_SHORT)
+                            Toast.makeText(applicationContext, "Login bem-sucedido!", Toast.LENGTH_SHORT)
                                 .show()
-                            (activity as MainActivity).updateNavigationMenu()
+                            val intent: Intent = Intent(
+                                applicationContext,
+                                MainActivity::class.java
+                            )
+                            startActivity(intent)
                         } else {
                             Toast.makeText(
-                                context,
+                                applicationContext,
                                 "Email ou senha incorretos",
                                 Toast.LENGTH_SHORT
                             ).show()
@@ -111,7 +101,7 @@ class LoginFragment : Fragment() {
 
                     override fun onCancelled(error: DatabaseError) {
                         Toast.makeText(
-                            context,
+                            applicationContext,
                             "Erro ao acessar o banco de dados",
                             Toast.LENGTH_SHORT
                         ).show()
@@ -121,12 +111,13 @@ class LoginFragment : Fragment() {
         }
 
 
-        val registerLink: TextView = view.findViewById(R.id.registerLink)
+        val registerLink: TextView = findViewById(R.id.registerLink)
         registerLink.setOnClickListener {
-            navController.navigate(R.id.navigation_cadastro_usuario)
+            val intent: Intent = Intent(
+                applicationContext,
+                CadastroUsuarioActivity::class.java
+            )
+            startActivity(intent)
         }
-
-        return view
-
     }
 }
