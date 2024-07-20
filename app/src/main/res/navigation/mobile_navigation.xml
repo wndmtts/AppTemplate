@@ -20,6 +20,6 @@
     <fragment
         android:id="@+id/navigation_item"
         android:name="com.jailton.apptemplateproject.ui.store.StoreFragment"
-        android:label="@string/title_item"
+        android:label="@string/title_store"
         tools:layout="@layout/fragment_store" />
 </navigation>
