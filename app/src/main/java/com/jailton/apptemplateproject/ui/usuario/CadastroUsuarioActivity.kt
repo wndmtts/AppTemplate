@@ -1,6 +1,7 @@
 package com.jailton.apptemplateproject.ui.usuario
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
@@ -9,6 +10,9 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.jailton.apptemplateproject.MainActivity
@@ -25,17 +29,15 @@ class CadastroUsuarioActivity : AppCompatActivity() {
     private lateinit var registerButton: Button
     private lateinit var sairButton: Button
     private lateinit var database: DatabaseReference
-
+    private lateinit var auth: FirebaseAuth
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activityt_cadastro_usuario)
 
-
-        // Inicializar Realtime Database
-        database =
-            FirebaseDatabase.getInstance().reference
+        // Inicializa o Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         textCadastroUsuarioTitle = findViewById(R.id.textCadastroUsuarioTitle)
         registerNameEditText = findViewById(R.id.registerNameEditText)
@@ -45,25 +47,21 @@ class CadastroUsuarioActivity : AppCompatActivity() {
         registerButton = findViewById(R.id.registerButton)
         sairButton = findViewById(R.id.sairButton)
 
-        // Acessar currentUser
-        val user = MainActivity.currentUser
-
-        if (user != null) {
-            sairButton.visibility = View.VISIBLE
-        }
 
         registerButton.setOnClickListener {
-            registerUser()
+            createAccount()
         }
 
+
         sairButton.setOnClickListener {
-            MainActivity.currentUser = null
             finish()
         }
 
     }
 
-    private fun registerUser() {
+
+
+    private fun createAccount() {
         val name = registerNameEditText.text.toString().trim()
         val email = registerEmailEditText.text.toString().trim()
         val password = registerPasswordEditText.text.toString().trim()
@@ -80,61 +78,66 @@ class CadastroUsuarioActivity : AppCompatActivity() {
             return
         }
 
-        // Obtém uma referência para o nó "usuarios" no Realtime Database
-        val usuariosRef = database.child("usuarios")
-
-        // Acessar currentUser
-        val user = MainActivity.currentUser
-
-        // Verifica se o usuário atual já está definido
-        if (user != null) {
-            // Se o usuário já existe, atualiza os dados
-            val userId =
-                user.key  // Assumindo que userId é a chave do usuário no banco de dados
-            val updatedUser = Usuario(userId, name, email, password)
-
-            if (userId != null) {
-                usuariosRef.child(userId).setValue(updatedUser)
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            this,
-                            "Dados do usuário atualizados com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            this,
-                            "Falha ao atualizar dados do usuário",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            }
-        } else {
-            // Se o usuário não existe, insere um novo usuário
-            val userId = usuariosRef.push().key
-            if (userId != null) {
-                val newUser = Usuario(userId, name, email, password)
-
-                usuariosRef.child(userId).setValue(newUser)
-                    .addOnSuccessListener {
+        try {
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
                         Toast.makeText(
                             this,
                             "Novo usuário cadastrado com sucesso!",
                             Toast.LENGTH_SHORT
                         ).show()
-                        finish()
-                    }
-                    .addOnFailureListener {
+                        val user = auth.currentUser
+                        updateProfile(user, name)
+                        sendEmailVerification(user)
+                    } else {
                         Toast.makeText(
                             this,
-                            "Falha ao cadastrar novo usuário",
+                            "Falha ao cadastrar novo usuário no Firebase",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
-            } else {
-                Toast.makeText(this, "Erro ao gerar o ID do usuário", Toast.LENGTH_SHORT).show()
-            }
+                }
+
+        } catch (ex: Exception) {
+            Toast.makeText(
+                this,
+                "Falha ao conectar com o Firebase",
+                Toast.LENGTH_SHORT
+            ).show()
         }
+
     }
+
+    private fun sendEmailVerification(user: FirebaseUser?) {
+        user?.sendEmailVerification()
+            ?.addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(baseContext, "Verification email sent to ${user.email}.",
+                        Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(baseContext, "Failed to send verification email.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun updateProfile(user: FirebaseUser?, displayName: String) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(displayName)
+            .build()
+
+        user?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(baseContext, "Nome do usuario alterado com sucesso.",
+                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(baseContext, "Não foi possivel alterar o nome do usuario.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
 }
