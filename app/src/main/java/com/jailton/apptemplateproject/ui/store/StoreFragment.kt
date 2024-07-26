@@ -35,7 +35,6 @@ class StoreFragment : Fragment() {
     private lateinit var storeImageView: ImageView
     private lateinit var storeNameEditText: EditText
     private lateinit var storeEmailEditText: EditText
-    private lateinit var storePasswordEditText: EditText
     private lateinit var selectImageButton: Button
     private lateinit var registerStoreButton: Button
     private var imageUri: Uri? = null
@@ -62,7 +61,6 @@ class StoreFragment : Fragment() {
         storeImageView = view.findViewById(R.id.image_store)
         storeNameEditText = view.findViewById(R.id.edit_text_store_name)
         storeEmailEditText = view.findViewById(R.id.edit_text_store_email)
-        storePasswordEditText = view.findViewById(R.id.edit_text_store_password)
         selectImageButton = view.findViewById(R.id.button_select_image)
         registerStoreButton = view.findViewById(R.id.button_register_store)
 
@@ -82,10 +80,10 @@ class StoreFragment : Fragment() {
         registerStoreButton.setOnClickListener {
             val name = storeNameEditText.text.toString()
             val email = storeEmailEditText.text.toString()
-            val password = storePasswordEditText.text.toString()
 
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || imageUri == null) {
-                Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty() || email.isEmpty() || imageUri == null) {
+                Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 uploadImageToFirebase()
             }
@@ -104,7 +102,8 @@ class StoreFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
-            && data != null && data.data != null) {
+            && data != null && data.data != null
+        ) {
             imageUri = data.data
             Glide.with(this).load(imageUri).into(storeImageView)
         }
@@ -121,7 +120,8 @@ class StoreFragment : Fragment() {
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(context, "Falha ao fazer upload da imagem", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Falha ao fazer upload da imagem", Toast.LENGTH_SHORT)
+                        .show()
                 }
         }
     }
@@ -129,16 +129,17 @@ class StoreFragment : Fragment() {
     private fun registerStore(imageUrl: String) {
         val name = storeNameEditText.text.toString()
         val email = storeEmailEditText.text.toString()
-        val password = storePasswordEditText.text.toString()
 
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT).show()
+        if (name.isEmpty() || email.isEmpty()) {
+            Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
+                .show()
             return
         }
+        var user = MainActivity.usuarioLogado
+        val store = Item(name, email, imageUrl, user?.uid.toString())
 
-        val store = Item(name, email, password, imageUrl)
-
-        val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/")
+        val database: FirebaseDatabase =
+            FirebaseDatabase.getInstance("https://apptemplate-35820-default-rtdb.firebaseio.com/")
         val storesReference: DatabaseReference = database.getReference("stores")
 
         // Verifica se a referência "stores" existe
@@ -151,7 +152,11 @@ class StoreFragment : Fragment() {
                             saveStoreToDatabase(store, storesReference)
                         }
                         .addOnFailureListener {
-                            Toast.makeText(context, "Falha ao criar referência 'stores'", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Falha ao criar referência 'stores'",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 } else {
                     // Se o nó "stores" já existe, salva a loja diretamente
@@ -160,7 +165,8 @@ class StoreFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Erro ao verificar referência 'stores'", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Erro ao verificar referência 'stores'", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -171,7 +177,9 @@ class StoreFragment : Fragment() {
         if (storeId != null) {
             storesReference.child(storeId).setValue(store)
                 .addOnSuccessListener {
-                    Toast.makeText(context, "Loja cadastrada com sucesso!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Loja cadastrada com sucesso!", Toast.LENGTH_SHORT)
+                        .show()
+                    requireActivity().supportFragmentManager.popBackStack()
                 }
                 .addOnFailureListener {
                     Toast.makeText(context, "Falha ao cadastrar a loja", Toast.LENGTH_SHORT).show()
@@ -184,12 +192,16 @@ class StoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Acessar currentUser
-        val user = MainActivity.currentUser
+        // Acessar usuarioLogado
+        var useFirebase = MainActivity.usuarioLogado
 
         // Verifica se o usuário atual já está definido
-        if (user == null) {
-            Toast.makeText(context, "Por favor, faça o login antes de prosseguir!", Toast.LENGTH_SHORT).show()
+        if (useFirebase == null) {
+            Toast.makeText(
+                context,
+                "Por favor, faça o login antes de prosseguir!",
+                Toast.LENGTH_SHORT
+            ).show()
             requireActivity().supportFragmentManager.popBackStack()
         }
     }

@@ -2,19 +2,30 @@ package com.jailton.apptemplateproject.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
 import com.jailton.apptemplateproject.MainActivity
+import com.jailton.apptemplateproject.MainActivity.Companion.usuarioLogado
 import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Usuario
 import com.jailton.apptemplateproject.ui.usuario.CadastroUsuarioActivity
@@ -27,6 +38,14 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var registerLink: TextView
     private lateinit var navController: NavController
     private lateinit var database: DatabaseReference
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+        private const val TAG = "GoogleActivity"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,75 +61,6 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
-            val password = passwordEditText.text.toString()
-
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Por favor, preencha todos os campos",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                // Implementar a lógica de login aqui
-                database =
-                    FirebaseDatabase.getInstance().reference
-                val usersReference = database.child("usuarios")
-
-                // Listener para verificar se o usuário existe
-                usersReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        var userExists = false
-                        for (userSnapshot in snapshot.children) {
-                            // Tente pegar os dados como um mapa e criar uma instância de Usuario manualmente
-                            val userMap = userSnapshot.value as? Map<*, *>
-                            if (userMap != null) {
-                                val emailFromDb = userMap["email"] as? String
-                                val senhaFromDb = userMap["password"] as? String
-                                if (emailFromDb == email && senhaFromDb == password) {
-                                    val nomeFromDb = userMap["nome"] as? String
-                                    MainActivity.currentUser = Usuario(
-                                        userSnapshot.key,
-                                        nomeFromDb,
-                                        emailFromDb,
-                                        senhaFromDb
-                                    )
-                                    userExists = true
-                                    break
-                                }
-                            }
-                        }
-
-                        if (userExists) {
-                            Toast.makeText(applicationContext, "Login bem-sucedido!", Toast.LENGTH_SHORT)
-                                .show()
-                            val intent: Intent = Intent(
-                                applicationContext,
-                                MainActivity::class.java
-                            )
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(
-                                applicationContext,
-                                "Email ou senha incorretos",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(
-                            applicationContext,
-                            "Erro ao acessar o banco de dados",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
-            }
-        }
-
-
         val registerLink: TextView = findViewById(R.id.registerLink)
         registerLink.setOnClickListener {
             val intent: Intent = Intent(
@@ -119,5 +69,46 @@ class LoginActivity : AppCompatActivity() {
             )
             startActivity(intent)
         }
+
+        // Inicializa o Firebase Auth
+        auth = FirebaseAuth.getInstance()
+
+        loginButton.setOnClickListener {
+            val email = emailEditText.text.toString()
+            val password = passwordEditText.text.toString()
+            signIn(email, password)
+        }
     }
+
+    private fun signIn(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "signInWithEmail:success")
+                    usuarioLogado = auth.currentUser
+                    updateUI(usuarioLogado)
+                } else {
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            // Navegue para a próxima atividade
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "Email ou senha incorretos",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
 }
+

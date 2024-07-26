@@ -1,8 +1,7 @@
 package com.jailton.apptemplateproject.ui.usuario
 
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.jailton.apptemplateproject.MainActivity
 import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Usuario
-import com.jailton.apptemplateproject.databinding.FragmentHomeBinding
 import com.jailton.apptemplateproject.databinding.FragmentPerfilUsuarioBinding
 
 
@@ -30,6 +30,7 @@ class PerfilUsuarioFragment : Fragment() {
     private lateinit var registerButton: Button
     private lateinit var sairButton: Button
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -42,9 +43,8 @@ class PerfilUsuarioFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_perfil_usuario, container, false)
 
-        // Inicializar Realtime Database
-        database =
-            FirebaseDatabase.getInstance().reference
+        // Inicializa o Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
         registerNameEditText = view.findViewById(R.id.registerNameEditText)
         registerEmailEditText = view.findViewById(R.id.registerEmailEditText)
@@ -54,27 +54,37 @@ class PerfilUsuarioFragment : Fragment() {
         sairButton = view.findViewById(R.id.sairButton)
 
         // Acessar currentUser
-        val user = MainActivity.currentUser
+        val user = MainActivity.usuarioLogado
 
         if (user != null) {
             sairButton.visibility = View.VISIBLE
+            registerPasswordEditText.visibility = View.GONE
+            registerConfirmPasswordEditText.visibility = View.GONE
+            registerEmailEditText.isEnabled = false
         }
 
         registerButton.setOnClickListener {
-            registerUser()
+            updateUser()
         }
 
         sairButton.setOnClickListener {
-            MainActivity.currentUser = null
-            Toast.makeText(
-                context,
-                "Logout realizado com sucesso!",
-                Toast.LENGTH_SHORT
-            ).show()
-            requireActivity().finish()
+            signOut()
         }
 
         return view
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        MainActivity.usuarioLogado = null
+        Toast.makeText(
+            context,
+            "Logout realizado com sucesso!",
+            Toast.LENGTH_SHORT
+        ).show()
+        MainActivity.usuarioLogado = null
+
+        requireActivity().finish()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,64 +93,45 @@ class PerfilUsuarioFragment : Fragment() {
         // Exibe os dados do usuário logado, se disponível
 
         // Acessar currentUser
-        val user = MainActivity.currentUser
+        val user = MainActivity.usuarioLogado
 
-        if (user != null) {
-            registerNameEditText.setText(user.nome)
-            registerEmailEditText.setText(user.email)
+        var user_firebase = MainActivity.usuarioLogado
+        if(user_firebase != null){
+            registerNameEditText.setText(user_firebase.displayName)
+            registerEmailEditText.setText(user_firebase.email)
         }
     }
 
-    private fun registerUser() {
+    private fun updateUser() {
         val name = registerNameEditText.text.toString().trim()
-        val email = registerEmailEditText.text.toString().trim()
-        val password = registerPasswordEditText.text.toString().trim()
-        val confirmPassword = registerConfirmPasswordEditText.text.toString().trim()
-
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(context, "Por favor, preencha todos os campos", Toast.LENGTH_SHORT)
-                .show()
-            return
-        }
-
-        if (password != confirmPassword) {
-            Toast.makeText(context, "As senhas não coincidem", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Obtém uma referência para o nó "usuarios" no Realtime Database
-        val usuariosRef = database.child("usuarios")
 
         // Acessar currentUser
-        val user = MainActivity.currentUser
+        val user = MainActivity.usuarioLogado
 
         // Verifica se o usuário atual já está definido
         if (user != null) {
             // Se o usuário já existe, atualiza os dados
-            val userId =
-                user.key  // Assumindo que userId é a chave do usuário no banco de dados
-            val updatedUser = Usuario(userId, name, email, password)
-
-            if (userId != null) {
-                usuariosRef.child(userId).setValue(updatedUser)
-                    .addOnSuccessListener {
-                        Toast.makeText(
-                            context,
-                            "Dados do usuário atualizados com sucesso!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(
-                            context,
-                            "Falha ao atualizar dados do usuário",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            }
+            updateProfile(user, name)
         } else {
             Toast.makeText(context, "Não foi possível encontrar o usuário logado", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun updateProfile(user: FirebaseUser?, displayName: String) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(displayName)
+            .build()
+
+        user?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Nome do usuario alterado com sucesso.",
+                        Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Não foi possivel alterar o nome do usuario.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     override fun onDestroyView() {
