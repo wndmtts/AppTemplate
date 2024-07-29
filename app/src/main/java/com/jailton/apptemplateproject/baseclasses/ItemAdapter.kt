@@ -21,6 +21,7 @@ class StoreAdapter(private val storeList: List<Item>) : RecyclerView.Adapter<Sto
         val store = storeList[position]
         holder.storeNameTextView.text = store.name
         holder.storeEmailTextView.text = store.email
+        holder.storeEnderecoTextView.text = store.endereco
         Glide.with(holder.storeImageView.context)
             .load(store.imageUrl)
             .into(holder.storeImageView)
@@ -33,6 +34,7 @@ class StoreAdapter(private val storeList: List<Item>) : RecyclerView.Adapter<Sto
     class StoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val storeImageView: ImageView = itemView.findViewById(R.id.storeImageView)
         val storeNameTextView: TextView = itemView.findViewById(R.id.storeNameTextView)
+        val storeEnderecoTextView: TextView = itemView.findViewById(R.id.storeEnderecoTextView)
         val storeEmailTextView: TextView = itemView.findViewById(R.id.storeEmailTextView)
     }
 }
