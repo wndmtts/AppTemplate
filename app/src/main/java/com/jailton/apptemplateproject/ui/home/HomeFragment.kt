@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
                     val store = storeSnapshot.getValue(Item::class.java)
                     store?.let { storeList.add(it) }
                 }
-                storeAdapter = StoreAdapter(storeList)
+                storeAdapter = StoreAdapter(requireContext(), storeList)
                 recyclerViewStores.adapter = storeAdapter
             }
 
