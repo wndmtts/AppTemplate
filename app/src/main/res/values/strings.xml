@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppTemplateProject</string>
+    <string name="app_name">Catálogo AutoTB</string>
     <string name="title_home">Home</string>
     <string name="title_login">Login</string>
     <string name="title_usuario">Usuario</string>
