@@ -41,6 +41,12 @@ android {
         exclude(group = "com.android.support", module = "support-core-ui")
         exclude(group = "com.android.support", module = "support-compat")
     }
+
+    packagingOptions {
+        exclude ("META-INF/INDEX.LIST")
+        exclude ("META-INF/io.netty.versions.properties")
+        exclude ("META-INF/DEPENDENCIES")
+    }
 }
 
 dependencies {
@@ -65,6 +71,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation (libs.firebase.messaging)
     implementation (libs.play.services.maps)
+    implementation (libs.play.services.location)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

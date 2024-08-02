@@ -58,7 +58,7 @@
                 <TextView
                     android:id="@+id/storeEnderecoTextView"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:layout_weight="1"
                     android:textSize="14sp" />
@@ -70,13 +70,29 @@
                     android:layout_gravity="end|bottom"
                     android:src="@android:drawable/ic_dialog_map" />
 
+                <ImageView
+                    android:id="@+id/wazeIconImageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="end|bottom"
+                    android:src="@android:drawable/arrow_up_float" />
+
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/storeDistanceTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/storeEmailTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="14sp" />
+
+
         </LinearLayout>
     </LinearLayout>
 
