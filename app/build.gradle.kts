@@ -72,8 +72,6 @@ dependencies {
     implementation (libs.firebase.messaging)
     implementation (libs.play.services.maps)
     implementation (libs.play.services.location)
-    implementation (libs.google.cloud.bigquery)
-    implementation (libs.google.auth.library.oauth2.http)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -25,8 +25,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.google.cloud.bigquery.BigQueryOptions
-import com.google.cloud.bigquery.QueryJobConfiguration
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -36,12 +34,6 @@ import com.jailton.apptemplateproject.R
 import com.jailton.apptemplateproject.baseclasses.Item
 import com.jailton.apptemplateproject.baseclasses.StoreAdapter
 import com.jailton.apptemplateproject.databinding.FragmentHomeBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.io.InputStream
 import java.util.Locale
 
 class HomeFragment : Fragment() {
