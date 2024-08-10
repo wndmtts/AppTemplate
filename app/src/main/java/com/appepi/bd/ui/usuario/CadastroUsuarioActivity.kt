@@ -1,10 +1,6 @@
-package com.jailton.apptemplateproject.ui.usuario
+package com.appepi.bd.ui.usuario
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -14,10 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.jailton.apptemplateproject.MainActivity
-import com.jailton.apptemplateproject.R
-import com.jailton.apptemplateproject.baseclasses.Usuario
+import com.appepi.bd.R
 
 class CadastroUsuarioActivity : AppCompatActivity() {
 

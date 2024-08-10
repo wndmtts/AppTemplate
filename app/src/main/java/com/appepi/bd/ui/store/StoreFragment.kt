@@ -1,4 +1,4 @@
-package com.jailton.apptemplateproject.ui.store
+package com.appepi.bd.ui.store
 
 import android.app.Activity
 import android.content.Intent
@@ -20,10 +20,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.jailton.apptemplateproject.MainActivity
-import com.jailton.apptemplateproject.R
-import com.jailton.apptemplateproject.baseclasses.Item
-import com.jailton.apptemplateproject.databinding.FragmentStoreBinding
+import com.appepi.bd.MainActivity
+import com.appepi.bd.R
+import com.appepi.bd.baseclasses.Item
+import com.appepi.bd.databinding.FragmentStoreBinding
 import java.util.UUID
 
 

@@ -1,4 +1,4 @@
-package com.jailton.apptemplateproject.ui.firebase
+package com.appepi.bd.ui.firebase
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,8 +10,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.jailton.apptemplateproject.MainActivity
-import com.jailton.apptemplateproject.R
+import com.appepi.bd.MainActivity
+import com.appepi.bd.R
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
