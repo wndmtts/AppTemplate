@@ -1,7 +1,6 @@
-package com.jailton.apptemplateproject.ui.usuario
+package com.appepi.bd.ui.usuario
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
-import com.jailton.apptemplateproject.MainActivity
-import com.jailton.apptemplateproject.R
-import com.jailton.apptemplateproject.baseclasses.Usuario
-import com.jailton.apptemplateproject.databinding.FragmentPerfilUsuarioBinding
+import com.appepi.bd.MainActivity
+import com.appepi.bd.R
+import com.appepi.bd.databinding.FragmentPerfilUsuarioBinding
 
 
 class PerfilUsuarioFragment : Fragment() {

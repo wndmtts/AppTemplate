@@ -1,4 +1,4 @@
-package com.jailton.apptemplateproject
+package com.appepi.bd
 
 import org.junit.Test
 

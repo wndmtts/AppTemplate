@@ -1,8 +1,7 @@
-package com.jailton.apptemplateproject.ui.home
+package com.appepi.bd.ui.home
 
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -11,8 +10,6 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -31,14 +28,14 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.jailton.apptemplateproject.R
-import com.jailton.apptemplateproject.baseclasses.Item
-import com.jailton.apptemplateproject.baseclasses.StoreAdapter
-import com.jailton.apptemplateproject.databinding.FragmentHomeBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.appepi.bd.R
+import com.appepi.bd.baseclasses.Item
+import com.appepi.bd.baseclasses.StoreAdapter
+import com.appepi.bd.databinding.FragmentHomeBinding
 import java.util.Locale
 
 class HomeFragment : Fragment() {
